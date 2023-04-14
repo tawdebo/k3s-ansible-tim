@@ -1,36 +1,23 @@
 ---
-
-- hosts: proxmox
-  gather_facts: true
-  become: yes
-  roles:
-    - role: proxmox_lxc
-      when: proxmox_lxc_configure
-
 - hosts: k3s_cluster
-  gather_facts: yes
+  gather_facts: true
+  become: true
   roles:
-    - role: lxc
-      become: true
-      when: proxmox_lxc_configure
     - role: prereq
-      become: true
     - role: download
-      become: true
     - role: raspberrypi
-      become: true
 
 - hosts: master
+  become: true
   roles:
     - role: k3s/master
-      become: true
 
 - hosts: node
+  become: true
   roles:
     - role: k3s/node
-      become: true
 
-- hosts: master
+- hosts: localhost
+  connection: local
   roles:
-    - role: k3s/post
-      become: true
+    - role: postconfig/localhost
